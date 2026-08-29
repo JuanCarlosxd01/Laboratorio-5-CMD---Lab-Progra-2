@@ -234,4 +234,8 @@ public class ComandoCMD2 {
     public void exit() {
         System.exit(0);
     }
+    
+    public void setCarpetaActual( File carpetaActual){
+        this.carpetaActual = carpetaActual;
+    }
 }
