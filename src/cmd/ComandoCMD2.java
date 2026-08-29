@@ -105,5 +105,41 @@ public class ComandoCMD2 {
             return "Error al copiar el archivo.";
         }
     }
-    
+
+    private String buscar(File carpeta, String nombre) {
+
+        String resultado = "";
+
+        File[] archivos = carpeta.listFiles();
+
+        if (archivos == null) {
+            return resultado;
+        }
+
+        for (int i = 0; i < archivos.length; i++) {
+
+            File archivo = archivos[i];
+
+            if (archivo.getName().toLowerCase().contains(nombre.toLowerCase())) {
+                resultado += archivo.getAbsolutePath() + "\n";
+            }
+
+            if (archivo.isDirectory()) {
+                resultado += buscar(archivo, nombre);
+            }
+        }
+
+        return resultado;
+    }
+
+    public String find(String nombre) {
+
+        String resultado = buscar(carpetaActual, nombre);
+
+        if (resultado.isEmpty()) {
+            return "No se encontraron archivos o carpetas.";
+        }
+
+        return resultado;
+    }
 }
