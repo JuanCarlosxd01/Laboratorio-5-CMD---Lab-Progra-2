@@ -30,6 +30,15 @@ public class GestorArchivos {
         return directorioActual;
     }
 
+    public void setCarpetaActual(File carpetaActual) {
+    // Valida que exista, sea carpeta y no se salga de la raíz simulada
+        if (carpetaActual != null && carpetaActual.exists() && carpetaActual.isDirectory()) {
+            if (carpetaActual.getAbsolutePath().startsWith(directorioRaiz.getAbsolutePath())) {
+                this.directorioActual = carpetaActual;
+            }
+        }
+    }
+
     public String obtenerPrompt() {
         String relativa = directorioActual.getAbsolutePath().substring(directorioRaiz.getAbsolutePath().length());
         if (relativa.startsWith(File.separator)) {

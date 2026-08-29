@@ -154,6 +154,11 @@ public class consolaGUI extends JFrame{
         return gestorArchivos.getDirectorioActual();
     }
 
+    public void setCarpetaActual(File carpetaActual) {
+        gestorArchivos.setCarpetaActual(carpetaActual);
+        actualizarInterfaz();
+    }
+
     public void actualizarInterfaz() {
         if (modoActual == ModoEntrada.NORMAL) {
             labelPrompt.setText(gestorArchivos.obtenerPrompt());
