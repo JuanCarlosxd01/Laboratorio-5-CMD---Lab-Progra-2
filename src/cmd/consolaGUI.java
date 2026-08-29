@@ -23,7 +23,7 @@ public class consolaGUI extends JFrame{
     private String nombreArchivoActivo = "";
     
     public consolaGui(){
-        super("Simbolo del sistema -CMD")
+        super("Simbolo del sistema -CMD");
         this.gestorArchivos= new GestorArchivos();
         this.interprete = new controladorComandos(this, gestorArchivos);
       
