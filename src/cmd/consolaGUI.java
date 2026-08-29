@@ -7,31 +7,37 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.File;
 
 public class consolaGUI extends JFrame{
     private JTextArea areaSalida;
     private JTextField campoEntrada;
     private JLabel labelPrompt;
     private JScrollPane scrollSalida;
-    
+
     private final GestorArchivos gestorArchivos;
     private final controladorComandos interprete;
-    
+
+    // Estados para los comandos de escritura multilínea (Wr y Ap)
     public enum ModoEntrada { NORMAL, WRITING }
     private ModoEntrada modoActual = ModoEntrada.NORMAL;
     private FileWriter escritorActivo = null;
     private String nombreArchivoActivo = "";
-    
-    public consolaGui(){
-        super("Simbolo del sistema -CMD");
-        this.gestorArchivos= new GestorArchivos();
+
+    public consolaGUI() {
+        super("Símbolo del sistema - CMD");
+
+        this.gestorArchivos = new GestorArchivos();
         this.interprete = new controladorComandos(this, gestorArchivos);
-      
+
+        configurarInterfaz();
+        mostrarMensajeBienvenida();
     }
+
     private void configurarInterfaz() {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(850, 520);
-        setMinimumSize(new Dimension(700, 450)); // Requisito: mínimo 700x450
+        setMinimumSize(new Dimension(700, 450));
         setLocationRelativeTo(null);
 
         Color colorFondo = new Color(12, 12, 12);
@@ -90,6 +96,7 @@ public class consolaGUI extends JFrame{
 
         setContentPane(panelPrincipal);
     }
+
     private void mostrarMensajeBienvenida() {
         areaSalida.append("Microsoft Windows [Versión Simulada 10.0.19045]\n");
         areaSalida.append("(c) Consola de Comandos Simulada. Todos los derechos reservados.\n");
@@ -122,7 +129,7 @@ public class consolaGUI extends JFrame{
             }
         } else {
             areaSalida.append(gestorArchivos.obtenerPrompt() + texto + "\n");
-            interprete.interpretar(texto.trim());
+            interprete.ejecutarComando(texto.trim());
         }
         actualizarInterfaz();
     }
@@ -135,12 +142,16 @@ public class consolaGUI extends JFrame{
         areaSalida.append("Escriba las líneas de texto. Ingrese 'EXIT' para finalizar y guardar.\n\n");
     }
 
-    public void escribirEnConsola(String texto) {
-        areaSalida.append(texto);
+    public void imprimir(String texto) {
+        areaSalida.append(texto + "\n");
     }
 
-    public void limpiarConsola() {
+    public void limpiar() {
         areaSalida.setText("");
+    }
+
+    public File getCarpetaActual() {
+        return gestorArchivos.getDirectorioActual();
     }
 
     public void actualizarInterfaz() {
