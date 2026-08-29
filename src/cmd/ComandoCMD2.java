@@ -18,9 +18,6 @@ public class ComandoCMD2 {
     public File getCarpetaActual() {
         return carpetaActual;
     }
-    public void setCarpetaActual(File carpetaActual) {
-        this.carpetaActual = carpetaActual;
-    }
     public String ap(String nombreArchivo, String texto) {
 
         File archivo = new File(carpetaActual, nombreArchivo);
@@ -235,7 +232,7 @@ public class ComandoCMD2 {
         System.exit(0);
     }
     
-    public void setCarpetaActual( File carpetaActual){
+    public void setCarpetaActual(File carpetaActual){
         this.carpetaActual = carpetaActual;
     }
 }
