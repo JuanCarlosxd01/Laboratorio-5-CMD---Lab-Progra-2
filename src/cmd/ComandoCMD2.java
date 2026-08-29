@@ -142,4 +142,63 @@ public class ComandoCMD2 {
 
         return resultado;
     }
+
+    public String info(String nombre) {
+
+        File archivo = new File(carpetaActual, nombre);
+
+        if (!archivo.exists()) {
+            return "El archivo o carpeta no existe.";
+        }
+
+        String tipo;
+
+        if (archivo.isDirectory()) {
+            tipo = "Carpeta";
+        } else {
+            tipo = "Archivo";
+        }
+
+        String resultado = "";
+
+        resultado += "Tipo: " + tipo + "\n";
+        resultado += "Ruta: " + archivo.getAbsolutePath() + "\n";
+        resultado += "Tamaño: " + archivo.length() + " bytes\n";
+        resultado += "Última modificación: " + new Date(archivo.lastModified());
+
+        return resultado;
+    }
+
+    public String tree() {
+
+        return carpetaActual.getName() + "\n" + mostrarArbol(carpetaActual, "");
+    }
+
+    private String mostrarArbol(File carpeta, String espacio) {
+
+        String resultado = "";
+
+        File[] archivos = carpeta.listFiles();
+
+        if (archivos == null) {
+            return resultado;
+        }
+
+        for (int i = 0; i < archivos.length; i++) {
+
+            File archivo = archivos[i];
+
+            resultado += espacio + "|-- " + archivo.getName() + "\n";
+
+            if (archivo.isDirectory()) {
+                resultado += mostrarArbol(archivo, espacio + "    ");
+            }
+        }
+
+        return resultado;
+    }
+
+    public String cls() {
+        return "";
+    }
 }
