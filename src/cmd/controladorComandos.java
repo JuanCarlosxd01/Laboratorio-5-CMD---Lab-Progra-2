@@ -12,11 +12,13 @@ public class controladorComandos {
     private boolean append;
     private File archivoEscritura;
     private FileWriter escritor;
+    private ComandoCMD2 cmd2;
     
     public controladorComandos(consolaGUI consola, GestorArchivos gestor){
         this.consola = consola;
         this.gestor = gestor;
         modoEscritura = false;
+        cmd2 = new ComandoCMD2(consola.getCarpetaRaiz());
     }
     
     public void ejecutarComando(String entrada){
@@ -52,39 +54,66 @@ public class controladorComandos {
                 time();
                 break;
             case "Wr":
-                iniciarEscritura(partes, false);
+                wr(partes);
                 break;
             case "Rd":
                 rd(partes);
                 break;
             case "Ap":
-                iniciarEscritura(partes, true);
+                  if(partes.length < 3){
+                    consola.imprimir("Uso: Ap <archivo.ext> <texto>");
+                } else {
+                    String texto = "";
+                    for(int i = 2; i < partes.length; i++){
+                        texto += partes[i];
+                        if(i < partes.length - 1){
+                            texto += " ";
+                        }
+                    }
+                    consola.imprimir(
+                        cmd2.ap(partes[1], texto)
+                    );   
+                  }
+                  break;
             case "Ren":
-                ren(partes);
+                if(partes.length < 3){
+                    consola.imprimir("Uso: Ren <actual> <nuevo>");
+                } else {
+                    consola.imprimir(cmd2.ren(partes[1], partes[2]));
+                }
                 break;
             case "Copy":
-                copy(partes);
+                if(partes.length < 3){
+                    consola.imprimir("Uso: Copy <origen> <destino>");
+                } else {
+                    consola.imprimir(cmd2.copy(partes[1], partes[2]));
+                }
                 break;
             case "Find":
-                find(entrada);
+                if(partes.length < 2){
+                    consola.imprimir("Uso: Find <nombre>");
+                } else {
+                    consola.imprimir(cmd2.find(partes[1]));
+                }
                 break;
             case "Info":
-                info(partes);
+                if(partes.length < 2){
+                    consola.imprimir("Uso: Info <nombre>");
+                } else {
+                    consola.imprimir(cmd2.info(partes[1]));
+                }
                 break;
             case "Tree":
-                tree();
+                consola.imprimir(cmd2.tree());
                 break;
             case "Cls":
                 consola.limpiar();
                 break;
             case "Help":
-                help();
-                break;
+                consola.imprimir(cmd2.help());
+                break;      
             case "Exit":
-                cerrar();
-                break;
-            case "Grep":
-                grep(entrada);
+                cmd2.exit();
                 break;
             default:
                 consola.imprimir("'" + comando + "' no se reconoce como un comando interno o externo.");
@@ -115,7 +144,7 @@ public class controladorComandos {
             return;
         }
         File archivo = new File(consola.getCarpetaActual(), partes[1]);
-        if(archivo.exists){
+        if(archivo.exists()){
             consola.imprimir("Ya existe un archivo o carpeta con ese nombre.");
             return;
         }
@@ -138,7 +167,7 @@ public class controladorComandos {
             consola.imprimir("El archivo o carpeta no existe.");
             return;
         }
-        if(archivos.eliminarRecursivo(archivo)){
+        if(gestor.eliminarRecursivo(archivo)){
             consola.imprimir("Eliminado correctamente.");
         }
         else{
@@ -210,28 +239,93 @@ public class controladorComandos {
         consola.imprimir("Hora actual: " + formato.format(new Date()));
     }
     
-    private String wr(String nombreArchivo, String texto){
-        File archivo = new File(carpetaActual, nombreArchivo);
+    private void wr(String[] partes){
+        if(partes.length < 3){
+            consola.imprimir("Uso: Wr <archivo.ext> <texto>");
+            return;
+        }
+        String nombreArchivo = partes[1];
+        String texto = "";
+        for(int i = 2; i < partes.length; i++){
+            texto += partes[i];
+            if(i < partes.length - 1){
+                texto += " ";
+            }
+        }
+        File archivo = new File(
+                consola.getCarpetaActual(),
+                nombreArchivo
+        );
         if(!archivo.exists()){
-            return "El archivo no existe.";
+            consola.imprimir("El archivo no existe.");
+            return;
         }
         if(!archivo.isFile()){
-            return "El nombre indicado no corresponde a un archivo.";
+            consola.imprimir(
+                    "El nombre indicado no corresponde a un archivo."
+            );
+            return;
         }
         try{
+
             FileWriter escritor = new FileWriter(archivo);
+
             escritor.write(texto);
             escritor.write(System.lineSeparator());
+
             escritor.close();
-            return "Texto escrito correctamente.";
+
+            consola.imprimir(
+                    "Texto escrito correctamente."
+            );
         }catch(IOException e){
-            return "Error al escribir en el archivo.";
+            consola.imprimir(
+                    "Error al escribir en el archivo."
+            );
         }
     }
-        
     
-     
-    
-    
-    
+    public void rd(String[] partes){
+        if(partes.length < 2){
+            consola.imprimir("Uso: Rd <archivo.ext>");
+            return;
+        }
+        String nombreArchivo = partes[1];
+        File archivo = new File(
+                consola.getCarpetaActual(),
+                nombreArchivo
+        );
+        if(!archivo.exists()){
+            consola.imprimir("El archivo no existe.");
+            return;
+        }
+        if(!archivo.isFile()){
+            consola.imprimir(
+                    "El nombre indicado no corresponde a un archivo."
+            );
+            return;
+        }
+        try{
+            FileReader lector = new FileReader(archivo);
+            String contenido = "";
+            int caracter = lector.read();
+            while(caracter != -1){
+                contenido += (char) caracter;
+                caracter = lector.read();
+            }
+            lector.close();
+            if(contenido.isEmpty()){
+                consola.imprimir(
+                        "El archivo esta vacío."
+                );
+            }else{
+                consola.imprimir(contenido);
+            }
+        }catch(IOException e){
+            consola.imprimir(
+                    "Error al leer el archivo."
+            );
+        } 
+    }
+       
 }
