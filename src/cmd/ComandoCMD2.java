@@ -201,4 +201,35 @@ public class ComandoCMD2 {
     public String cls() {
         return "";
     }
+
+    public String help() {
+
+        String resultado = "";
+
+        resultado += "Mkdir <nombre> - Crea una carpeta\n";
+        resultado += "Mfile <nombre.ext> - Crea un archivo\n";
+        resultado += "Rm <nombre> - Elimina archivo o carpeta\n";
+        resultado += "Cd <nombre> - Cambia de carpeta\n";
+        resultado += ".. - Regresa a la carpeta anterior\n";
+        resultado += "Dir - Lista archivos y carpetas\n";
+        resultado += "Date - Muestra la fecha actual\n";
+        resultado += "Time - Muestra la hora actual\n";
+        resultado += "Wr <archivo.ext> - Escribe en un archivo\n";
+        resultado += "Rd <archivo.ext> - Lee un archivo\n";
+        resultado += "Ap <archivo.ext> - Agrega texto a un archivo\n";
+        resultado += "Ren <actual> <nuevo> - Renombra archivo o carpeta\n";
+        resultado += "Copy <origen> <destino> - Copia un archivo\n";
+        resultado += "Find <nombre> - Busca archivos o carpetas\n";
+        resultado += "Info <nombre> - Muestra información\n";
+        resultado += "Tree - Muestra la estructura de carpetas\n";
+        resultado += "Cls - Limpia la consola\n";
+        resultado += "Help - Muestra los comandos\n";
+        resultado += "Exit - Cierra la aplicación";
+
+        return resultado;
+    }
+
+    public void exit() {
+        System.exit(0);
+    }
 }
